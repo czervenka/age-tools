@@ -1,12 +1,26 @@
 #!/bin/bash
 
+ME=$0
+
 identity=$1
 shift
-src_dir=$1
+src=$1
 shift
 
-if [ -z $src_dir ]; then
-    echo "USAGE: `basename $1` <identity> <directory>"
+if [ -z $src ]; then
+    echo "USAGE: `basename $ME` <identity> <directory>" >&2
+    exit 255
 fi
 
-tar czv $src_dir | age-encrypt.sh $identity $* > src_dir.tar.gz.age
+echo "Encrypting ..." >&2
+echo "--------------"
+
+tar czv $src | age-encrypt.sh $identity $* > ${src}.age
+echo "--------------"
+echo
+echo "Encrypted message saved as ${src}.age."
+echo "
+To decrypt run:
+
+      age-decrypt.sh ${src}.age
+"

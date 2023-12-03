@@ -6,7 +6,10 @@ nick=$1
 pubkey=$2
 
 usage() {
-    echo "USAGE: `basename $0` <nick> <pubkey>"
+    echo "USAGE: `basename $0` <nick> <pubkey>
+
+    Associates <identity> with <nick>.
+    " >&2
 }
 
 identity_exists() {
@@ -20,9 +23,10 @@ if [ -z $pubkey ]; then
 fi
 
 if identity_exists $nick; then
-    echo "Identity exists"
+    echo "Identity exists" >&2
     exit 1
 else
     echo "$nick $pubkey" >> $AGE_IDENTITIES
+    echo "Identity key '$pubkey' was associated with nick '$nick'." >&2
 fi
 

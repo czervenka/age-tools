@@ -1,10 +1,21 @@
 #!/bin/sh
 
-PRIV_KEY=~/.age.key
+nick=$1
+filename=$2
 
-if [ ! -f $PRIV_KEY ]; then
+if [ "$nick" = "" ]; then
+    echo "USAGE: `basename $0` <nick> [<filename>]
 
-    echo "Missing age private key '$PRIV_KEY'. Generate one or update this script."
+    If no filename is specified, opens a text editor to write a message to
+    encrypt and prints the encrypted message to stdout.
+
+    Otherwise, if <filename> is specified, encrypts the file creating <filename>.age encrypted file.
+    " >&2
     exit 255
 fi
-age --decrypt -i ~/.age.key $*
+
+if [ "$filename" = "" ]; then
+    age-decrypt-text.sh $nick
+else
+    age-decrypt-dir.sh $nick $filename
+fi

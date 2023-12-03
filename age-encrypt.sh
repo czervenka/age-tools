@@ -1,40 +1,21 @@
 #!/bin/sh
 
-# USAGE:
-# Create file $HOME/.age-identities with content
-# <nickname> <public-key>
-#
-# After that encrypt message by typping
-# echo "somemessage" | age-encrypt <nickname>
+nick=$1
+filename=$2
 
-IDENTITIES_FILE=~/.age-identities
+if [ "$nick" = "" ]; then
+    echo "USAGE: `basename $0` <nick> [<filename>]
 
-username=$1
-shift
+    If no filename is specified, opens a text editor to write a message to
+    encrypt and prints the encrypted message to stdout.
 
-if [ -z $username ]; then
-    echo "Missing username\n\nUsage: echo \"message\" | $(basename $0) <nickname> > encrypted-messge.age"
+    Otherwise, if <filename> is specified, encrypts the file creating <filename>.age encrypted file.
+    " >&2
     exit 255
 fi
 
-if [ ! -f $IDENTITIES_FILE ]; then
-    echo "There is not identities file '$IDENTITIES_FILE'. Please create the file with content:
-
-    $IDENTITIES_FILE:
-    -----
-    <nickname> <key>
-    <inckname> <key>
-    -----
-    "
+if [ "$filename" = "" ]; then
+    age-encrypt-text.sh $nick
+else
+    age-encrypt-dir.sh $nick $filename
 fi
-
-username_to_key() {
-    cat ~/.age-identities | grep -E "^$username " | awk '{print $2}'
-}
-
-key=`username_to_key $username`
-if [ -z $key ]; then
-    echo -e "There is no key for user $username."
-    exit 1
-fi
-age --encrypt -r $key --armor -o - $*
