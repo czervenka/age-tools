@@ -12,7 +12,7 @@ Create age key (or symlink you existing one).
 
 Optional: Add you pubkey to known identities
 
-`age-identity-add me `cat ~/.age.key | grep public | awk '{print $4}'`
+`age-identity-add me $(cat ~/.age.key | grep public | awk '{print $4}')`
 
 
 ## Usage
